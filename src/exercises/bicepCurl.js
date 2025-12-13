@@ -6,23 +6,44 @@ export const bicepCurlRules = {
         {
             joint: "left_elbow",
             type: "stability",
-            relatedJoints: ["left_shoulder", "left_elbow", "left_hip"],
+            relatedJoints: ["left_elbow", "left_shoulder", "left_hip"], // Vertex: Shoulder
             idealAngle: 0,
-            thresholds: { medium: 15, high: 25 },
+            thresholds: { medium: 20, high: 35 },
             feedback: {
-                label: "Left elbow moving",
+                label: "Elbow swinging forward",
                 action: "Keep elbow pinned"
             }
         },
         {
             joint: "right_elbow",
             type: "stability",
-            relatedJoints: ["right_shoulder", "right_elbow", "right_hip"],
+            relatedJoints: ["right_elbow", "right_shoulder", "right_hip"], // Vertex: Shoulder
             idealAngle: 0,
-            thresholds: { medium: 15, high: 25 },
+            thresholds: { medium: 20, high: 35 },
             feedback: {
-                label: "Right elbow moving",
+                label: "Elbow swinging forward",
                 action: "Keep elbow pinned"
+            }
+        },
+        {
+            joint: "torso",
+            type: "stability",
+            relatedJoints: ["right_shoulder", "right_hip", "right_knee"], // Vertex: Hip
+            idealAngle: 180,
+            thresholds: { medium: 10, high: 20 },
+            feedback: {
+                label: "Leaning back",
+                action: "Stand up straight"
+            }
+        },
+        {
+            joint: "shoulders",
+            type: "symmetry_y",
+            relatedJoints: ["left_shoulder", "right_shoulder"],
+            thresholds: { medium: 0.15, high: 0.25 },
+            feedback: {
+                label: "Shoulders uneven",
+                action: "Keep shoulders level"
             }
         }
     ],

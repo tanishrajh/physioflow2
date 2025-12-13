@@ -35,6 +35,10 @@ const FeedbackPanel = () => {
                 <div style={styles.guidanceText}>
                     {repStats.guidance}
                 </div>
+                <div style={styles.tempoContainer}>
+                    <span style={styles.tempoLabel}>Last Rep:</span>
+                    <span style={styles.tempoVal}>{repStats.tempo || "--"}s</span>
+                </div>
             </div>
 
             <h3 style={styles.subHeader}>Analysis</h3>
@@ -118,6 +122,24 @@ const styles = {
         color: '#fff',
         textTransform: 'uppercase',
         letterSpacing: '1px'
+    },
+    tempoContainer: {
+        marginTop: '15px',
+        paddingTop: '15px',
+        borderTop: '1px solid #444',
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '10px',
+        alignItems: 'center'
+    },
+    tempoLabel: {
+        color: '#888',
+        fontSize: '0.9rem'
+    },
+    tempoVal: {
+        color: '#00e5ff',
+        fontSize: '1.1rem',
+        fontWeight: 'bold'
     },
     subHeader: {
         fontSize: '0.9rem',

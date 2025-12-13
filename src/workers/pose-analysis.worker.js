@@ -184,9 +184,23 @@ function analyzeExercise(pose, visibleJoints) {
                 // If we returned to start (extension), rep++
                 if (nextPhaseName === 'extension') {
                     currentRepCount++;
+
+                    // Calculate Tempo
+                    const now = Date.now();
+                    const duration = (now - lastRepTime) / 1000;
+                    lastRepTime = now;
+
+                    if (duration > 1 && duration < 10) {
+                        lastRepDuration = duration.toFixed(1);
+                    }
                 }
 
-                repUpdate = { repCount: currentRepCount, guidance: currentGuidance, phase: currentPhase };
+                repUpdate = {
+                    repCount: currentRepCount,
+                    guidance: currentGuidance,
+                    phase: currentPhase,
+                    tempo: lastRepDuration
+                };
             }
         }
     }
@@ -197,6 +211,8 @@ function analyzeExercise(pose, visibleJoints) {
 let currentRepCount = 0;
 let currentPhase = 'extension';
 let currentGuidance = 'Get Ready';
+let lastRepTime = Date.now();
+let lastRepDuration = "0.0";
 
 self.onmessage = (e) => {
     const { type, payload } = e.data;
@@ -208,6 +224,8 @@ self.onmessage = (e) => {
             currentRepCount = 0;
             currentPhase = 'extension';
             currentGuidance = currentExercise.repLogic ? currentExercise.repLogic.phases.extension.guide : 'Start';
+            lastRepTime = Date.now();
+            lastRepDuration = "0.0";
             console.log(`Worker switched to ${currentExercise.name}`);
         }
     }
