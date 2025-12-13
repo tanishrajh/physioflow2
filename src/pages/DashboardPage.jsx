@@ -134,6 +134,51 @@ const DashboardPage = () => {
                                 <Activity color="#ff9500" />
                                 <h3>Recent Sessions</h3>
                             </div>
+                            {history.length > 1 && (
+                                <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: '#222', borderRadius: '8px', border: '1px solid #333' }}>
+                                    <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '5px' }}>Your Accuracy Trend (Last {Math.min(history.length, 10)} Sessions)</p>
+                                    <svg viewBox="0 0 300 100" style={{ width: '100%', height: '100px', overflow: 'visible' }}>
+                                        {/* Grid Lines */}
+                                        <line x1="0" y1="0" x2="300" y2="0" stroke="#333" strokeDasharray="4" />
+                                        <line x1="0" y1="50" x2="300" y2="50" stroke="#333" strokeDasharray="4" />
+                                        <line x1="0" y1="100" x2="300" y2="100" stroke="#333" strokeDasharray="4" />
+
+                                        {(() => {
+                                            // Prepare Data: Sort Oldest to Newest, take last 10
+                                            const data = [...history].reverse().slice(-10);
+                                            const points = data.map((d, i) => {
+                                                const x = (i / (data.length - 1 || 1)) * 300;
+                                                const y = 100 - d.accuracy; // Invert for SVG Y-coord
+                                                return `${x},${y}`;
+                                            }).join(' ');
+
+                                            return (
+                                                <>
+                                                    <polyline
+                                                        points={points}
+                                                        fill="none"
+                                                        stroke="#00e5ff"
+                                                        strokeWidth="2"
+                                                    />
+                                                    {data.map((d, i) => {
+                                                        const x = (i / (data.length - 1 || 1)) * 300;
+                                                        const y = 100 - d.accuracy;
+                                                        return (
+                                                            <g key={i}>
+                                                                <circle cx={x} cy={y} r="3" fill="#fff" />
+                                                                {/* Tooltip-ish text for last point */}
+                                                                {i === data.length - 1 && (
+                                                                    <text x={x} y={y - 10} fill="#00e5ff" fontSize="10" textAnchor="middle">{d.accuracy}%</text>
+                                                                )}
+                                                            </g>
+                                                        );
+                                                    })}
+                                                </>
+                                            );
+                                        })()}
+                                    </svg>
+                                </div>
+                            )}
                             {history.length === 0 ? (
                                 <p style={{ color: '#888' }}>No sessions recorded yet.</p>
                             ) : (
