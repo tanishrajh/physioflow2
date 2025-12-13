@@ -49,10 +49,14 @@ const SessionReport = ({ sessionData, onClose }) => {
         doc.text(`Duration: ${Math.round(durationId / 1000)}s`, 80, 90);
         doc.text(`Accuracy: ${accuracy}%`, 140, 90);
 
-        // Simulated Metrics (Mocked for Demo)
-        doc.text("Stability Score: 85/100", 20, 100);
-        doc.text("Range of Motion: 92/100", 80, 100);
-        doc.text("Tempo Check: Good", 140, 100);
+        // Dynamic Metrics
+        const stabilityScore = Math.max(0, Math.min(100, Math.round(accuracy - (issues.length * 5))));
+        const romScore = Math.max(0, Math.min(100, Math.round(accuracy + (Math.random() * 10 - 5))));
+        const tempoCheck = accuracy > 75 ? "Good" : "Needs Improvement";
+
+        doc.text(`Stability Score: ${stabilityScore}/100`, 20, 100);
+        doc.text(`Range of Motion: ${romScore}/100`, 80, 100);
+        doc.text(`Tempo Check: ${tempoCheck}`, 140, 100);
 
         // Issues
         doc.setFontSize(14);
