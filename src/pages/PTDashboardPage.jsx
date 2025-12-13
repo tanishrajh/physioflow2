@@ -53,6 +53,10 @@ const PTDashboardPage = () => {
         <div style={styles.container}>
             <div style={styles.header}>
                 <div style={styles.headerContent}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginRight: '20px' }} onClick={() => window.location.reload()}>
+                        <Activity color="#00e5ff" />
+                        <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>PhysioFlow</span>
+                    </div>
                     <h1>Dr. {user?.name?.replace('Dr. ', '')}</h1>
                     <span style={styles.badge}>Physiotherapist</span>
                 </div>

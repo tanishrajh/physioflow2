@@ -35,10 +35,7 @@ const FeedbackPanel = () => {
                 <div style={styles.guidanceText}>
                     {repStats.guidance}
                 </div>
-                <div style={styles.tempoContainer}>
-                    <span style={styles.tempoLabel}>Last Rep:</span>
-                    <span style={styles.tempoVal}>{repStats.tempo || "--"}s</span>
-                </div>
+
             </div>
 
             <h3 style={styles.subHeader}>Analysis</h3>

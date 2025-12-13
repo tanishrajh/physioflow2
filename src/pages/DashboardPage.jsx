@@ -44,7 +44,7 @@ const DashboardPage = () => {
         <div style={styles.container}>
             {/* Header */}
             <div style={styles.header}>
-                <div style={styles.logo}>
+                <div style={{ ...styles.logo, cursor: 'pointer' }} onClick={() => window.location.reload()}>
                     <Activity color="#00e5ff" />
                     <span>PhysioFlow</span>
                 </div>
@@ -119,14 +119,14 @@ const DashboardPage = () => {
 
                         {/* Trends Card - Moved here to fill space */}
                         {history.length > 1 && (
-                            <div style={styles.card}>
+                            <div style={{ ...styles.card, gridColumn: 'span 2' }}>
                                 <div style={styles.cardHeader}>
                                     <Activity color="#00e5ff" />
                                     <h3>Performance Trend</h3>
                                 </div>
                                 <div style={{ padding: '0px' }}>
                                     <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '15px' }}>Accuracy over last {Math.min(history.length, 10)} sessions</p>
-                                    <svg viewBox="0 0 300 100" style={{ width: '100%', height: '100px', overflow: 'visible' }}>
+                                    <svg viewBox="0 0 300 100" preserveAspectRatio="none" style={{ width: '100%', height: '100px', overflow: 'visible' }}>
                                         {/* Grid Lines */}
                                         <line x1="0" y1="0" x2="300" y2="0" stroke="#333" strokeDasharray="4" />
                                         <line x1="0" y1="50" x2="300" y2="50" stroke="#333" strokeDasharray="4" />
