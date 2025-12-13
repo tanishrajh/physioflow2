@@ -93,4 +93,4 @@ PhysioFlow has two main modes:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-*Built with ❤️ for WIE Hackathon at SIT Tumkur*
+*Built with ❤️ for hackathon at SIT*
