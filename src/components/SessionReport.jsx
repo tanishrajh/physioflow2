@@ -8,7 +8,7 @@ import { Download, Send, CheckCircle } from 'lucide-react';
 
 const SessionReport = ({ sessionData, onClose }) => {
     const { durationId, exercise, accuracy, issues } = sessionData;
-    const { sendSessionToPT } = useAuth();
+    const { user, sendSessionToPT } = useAuth();
 
     const sendToPT = () => {
         const success = sendSessionToPT(sessionData);
@@ -35,7 +35,7 @@ const SessionReport = ({ sessionData, onClose }) => {
         // Details
         doc.setTextColor(0, 0, 0);
         doc.setFontSize(12);
-        doc.text(`Patient: Priya Sharma`, 20, 55);
+        doc.text(`Patient: ${user?.name || 'Guest'}`, 20, 55);
         doc.text(`Date: ${new Date().toLocaleDateString()}`, 160, 55);
         doc.setDrawColor(200, 200, 200);
         doc.line(20, 60, 190, 60);
@@ -74,9 +74,14 @@ const SessionReport = ({ sessionData, onClose }) => {
         doc.text("Physiotherapist Assessment", 20, 160);
         doc.setFontSize(11);
         doc.setFont(undefined, 'italic');
-        const assessment = accuracy > 80
-            ? "Patient demonstrates excellent control and stability. Continue with current load."
-            : "Patient struggles with form consistency. Recommended to lower weight and focus on stability.";
+
+        // Use actual PT notes if available, otherwise use AI fallback
+        const assessment = user?.report?.notes
+            ? user.report.notes
+            : (accuracy > 80
+                ? "Patient demonstrates excellent control and stability. Continue with current load."
+                : "Patient struggles with form consistency. Recommended to lower weight and focus on stability.");
+
         doc.text(assessment, 25, 175, { maxWidth: 160 });
 
         doc.setFont(undefined, 'normal');

@@ -79,10 +79,7 @@ const PTDashboardPage = () => {
                                         <Activity size={16} color="#00e5ff" />
                                         <span>{p.report?.prescribedExercise || 'None'}</span>
                                     </div>
-                                    <div style={styles.stat}>
-                                        <FileText size={16} color="#00e5ff" />
-                                        <span>{p.report?.progress || 0}% Progress</span>
-                                    </div>
+
                                 </div>
                             </div>
                         ))
@@ -130,7 +127,7 @@ const PTDashboardPage = () => {
                             <div style={styles.reportPreview}>
                                 <h4>Current Status:</h4>
                                 <p><strong>Last Diagnosis:</strong> {selectedPatient.report?.diagnosis || 'N/A'}</p>
-                                <p><strong>Progress:</strong> {selectedPatient.report?.progress || 0}%</p>
+
                             </div>
 
                             <h4 style={{ marginTop: '20px', marginBottom: '10px', color: '#00e5ff', display: 'flex', alignItems: 'center', gap: '8px' }}>
