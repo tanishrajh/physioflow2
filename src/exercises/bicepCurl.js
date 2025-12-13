@@ -25,5 +25,14 @@ export const bicepCurlRules = {
                 action: "Keep elbow pinned"
             }
         }
-    ]
+    ],
+    repLogic: {
+        type: 'angle',
+        joint: 'right_elbow', // For demo, assuming right arm user
+        relatedJoints: ['right_shoulder', 'right_elbow', 'right_wrist'],
+        phases: {
+            extension: { threshold: 150, guide: "Curl Up", greaterThan: true, next: 'flexion' },
+            flexion: { threshold: 60, guide: "Lower Slowly", greaterThan: false, next: 'extension' }
+        }
+    }
 };

@@ -40,6 +40,7 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
                 if (window.__PHYSIO__) {
                     window.__PHYSIO__.smoothedPose = payload.smoothedPose;
                     window.__PHYSIO__.feedbackEvents = payload.feedbackEvents;
+                    window.__PHYSIO__.repStats = payload.repStats;
                 }
 
                 // Track accuracy

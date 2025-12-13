@@ -141,8 +141,62 @@ function analyzeExercise(pose, visibleJoints) {
         }
     });
 
-    return feedbackEvents;
+    // --- Rep Counting Logic ---
+    let repUpdate = { repCount: currentRepCount, guidance: currentGuidance, phase: currentPhase };
+
+    if (currentExercise.repLogic) {
+        const { joint, relatedJoints, phases } = currentExercise.repLogic;
+
+        // Find joints
+        const [aN, bN, cN] = relatedJoints;
+        const a = pose.keypoints.find(k => k.name === aN);
+        const b = pose.keypoints.find(k => k.name === bN);
+        const c = pose.keypoints.find(k => k.name === cN);
+
+        if (a && b && c) {
+            const angle = calculateAngle(a, b, c);
+            const activePhase = phases[currentPhase];
+
+            // Check transition
+            let transition = false;
+            // e.g. extension threshold 150. if angle > 150, we are definitely in extension.
+            // But we want to switch TO the next phase.
+            // Wait, logic should be:
+            // If I am in 'extension' (Start), I need to reach target of 'flexion'.
+            // Actually, simpler:
+
+            // Current Phase: 'extension' (Waiting to curl). Guide: "Curl Up".
+            // Target: Must reach 'flexion' zone (angle < 60).
+
+            const nextPhaseName = activePhase.next;
+            const targetPhase = phases[nextPhaseName];
+
+            const hitTarget = targetPhase.greaterThan
+                ? angle > targetPhase.threshold
+                : angle < targetPhase.threshold;
+
+            if (hitTarget) {
+                // Transition!
+                console.log(`Phase Switch: ${currentPhase} -> ${nextPhaseName} (Angle: ${Math.round(angle)})`);
+                currentPhase = nextPhaseName;
+                currentGuidance = targetPhase.guide;
+
+                // If we returned to start (extension), rep++
+                if (nextPhaseName === 'extension') {
+                    currentRepCount++;
+                }
+
+                repUpdate = { repCount: currentRepCount, guidance: currentGuidance, phase: currentPhase };
+            }
+        }
+    }
+
+    return { feedbackEvents, repUpdate };
 }
+
+let currentRepCount = 0;
+let currentPhase = 'extension';
+let currentGuidance = 'Get Ready';
 
 self.onmessage = (e) => {
     const { type, payload } = e.data;
@@ -151,32 +205,33 @@ self.onmessage = (e) => {
         const { exerciseId } = payload;
         if (EXERCISES[exerciseId]) {
             currentExercise = EXERCISES[exerciseId];
+            currentRepCount = 0;
+            currentPhase = 'extension';
+            currentGuidance = currentExercise.repLogic ? currentExercise.repLogic.phases.extension.guide : 'Start';
             console.log(`Worker switched to ${currentExercise.name}`);
         }
     }
     else if (type === 'pose') {
         const { poseFrame, timestamp } = payload;
 
-        // 1. One Euro Filtering
+        // ... (filtering & visibility same) ...
         const smoothedKeypoints = poseFrame.keypoints.map(kp => {
             const filter = getFilter(kp.name);
             const { x, y } = filter.filter(kp.x, kp.y, timestamp);
             return { ...kp, x, y };
         });
-
         const smoothedPose = { ...poseFrame, keypoints: smoothedKeypoints };
-
-        // 2. Visibility Gating
         const visibleJoints = checkVisibility(smoothedKeypoints, timestamp);
 
         // 3. Analysis
-        const feedbackEvents = analyzeExercise(smoothedPose, visibleJoints);
+        const analysis = analyzeExercise(smoothedPose, visibleJoints);
 
         self.postMessage({
             type: 'result',
             payload: {
                 smoothedPose,
-                feedbackEvents,
+                feedbackEvents: analysis.feedbackEvents,
+                repStats: analysis.repUpdate,
                 visibleJoints: Array.from(visibleJoints)
             }
         });

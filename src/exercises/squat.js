@@ -25,5 +25,14 @@ export const squatRules = {
                 action: "Push knees out"
             }
         }
-    ]
+    ],
+    repLogic: {
+        type: 'angle',
+        joint: 'left_knee', // Simplified for demo
+        relatedJoints: ['left_hip', 'left_knee', 'left_ankle'],
+        phases: {
+            extension: { threshold: 160, guide: "Squat Down", greaterThan: true, next: 'flexion' },
+            flexion: { threshold: 100, guide: "Stand Up", greaterThan: false, next: 'extension' }
+        }
+    }
 };

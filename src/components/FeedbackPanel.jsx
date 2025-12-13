@@ -3,33 +3,45 @@ import { getPhysioState } from '../state/globalState';
 
 const FeedbackPanel = () => {
     const [events, setEvents] = useState([]);
+    const [repStats, setRepStats] = useState({ repCount: 0, guidance: 'Get Ready' });
     const rafRef = useRef(null);
 
     useEffect(() => {
         const loop = () => {
             const state = getPhysioState();
-            // Simple dirty check or just continuously sync
-            // React state update only if different to avoid flickering?
-            // Actually, for a panel, 5-10fps update is fine, but we are inside RAF.
-            // Let's just debounce or check length.
 
-            // To prevent massive re-renders, we can check basic equality
             if (JSON.stringify(state.feedbackEvents) !== JSON.stringify(events)) {
                 setEvents(state.feedbackEvents || []);
+            }
+            if (state.repStats && (state.repStats.repCount !== repStats.repCount || state.repStats.guidance !== repStats.guidance)) {
+                setRepStats(state.repStats);
             }
             rafRef.current = requestAnimationFrame(loop);
         };
         rafRef.current = requestAnimationFrame(loop);
         return () => cancelAnimationFrame(rafRef.current);
-    }, [events]);
+    }, [events, repStats]);
 
     return (
         <div style={styles.panel}>
             <h2 style={styles.header}>PhysioFlow Assistant</h2>
+
+            {/* Rep Counter & Guidance Box */}
+            <div style={styles.guidanceBox}>
+                <div style={styles.repCount}>
+                    <span style={styles.repVal}>{repStats.repCount}</span>
+                    <span style={styles.repLabel}>REPS</span>
+                </div>
+                <div style={styles.guidanceText}>
+                    {repStats.guidance}
+                </div>
+            </div>
+
+            <h3 style={styles.subHeader}>Analysis</h3>
             {events.length === 0 ? (
                 <div style={styles.empty}>
                     <p>Pose looking good! 👍</p>
-                    <small>Maintained continuous visibility...</small>
+                    <small>Keep it smooth</small>
                 </div>
             ) : (
                 events.map((ev, i) => (
@@ -54,29 +66,71 @@ const getColor = (severity) => {
 
 const styles = {
     panel: {
-        width: '300px',
+        width: '320px',
         backgroundColor: '#1c1c1e',
         color: '#fff',
-        padding: '20px',
+        padding: '24px',
         height: '100%',
         boxShadow: '-4px 0 20px rgba(0,0,0,0.5)',
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px',
+        gap: '20px',
         fontFamily: 'Inter, sans-serif',
         zIndex: 100
     },
     header: {
-        fontSize: '1.2rem',
+        fontSize: '1.4rem',
         fontWeight: '700',
         marginBottom: '10px',
         borderBottom: '1px solid #333',
-        paddingBottom: '10px'
+        paddingBottom: '15px',
+        color: '#00e5ff'
+    },
+    guidanceBox: {
+        backgroundColor: '#2c2c2e',
+        borderRadius: '16px',
+        padding: '20px',
+        textAlign: 'center',
+        border: '1px solid #444',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+    },
+    repCount: {
+        display: 'flex',
+        alignItems: 'baseline',
+        justifyContent: 'center',
+        gap: '8px',
+        marginBottom: '10px'
+    },
+    repVal: {
+        fontSize: '3.5rem',
+        fontWeight: '800',
+        color: '#4cd964',
+        lineHeight: 1
+    },
+    repLabel: {
+        fontSize: '1rem',
+        fontWeight: '600',
+        color: '#666'
+    },
+    guidanceText: {
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
+        color: '#fff',
+        textTransform: 'uppercase',
+        letterSpacing: '1px'
+    },
+    subHeader: {
+        fontSize: '0.9rem',
+        textTransform: 'uppercase',
+        color: '#666',
+        marginTop: '10px'
     },
     empty: {
         color: '#888',
         textAlign: 'center',
-        marginTop: '50px'
+        padding: '20px',
+        backgroundColor: 'rgba(255,255,255,0.05)',
+        borderRadius: '8px'
     },
     card: {
         backgroundColor: '#2c2c2e',
