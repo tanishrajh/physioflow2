@@ -91,7 +91,7 @@ function analyzeExercise(pose, visibleJoints) {
                         feedbackEvents.push({
                             joint: rule.joint, // e.g., left_knee
                             label: rule.feedback.label,
-                            actionText: `${rule.feedback.action} ~${Math.round(diff)}°`,
+                            actionText: rule.feedback.action,
                             diffDeg: diff,
                             severity,
                             confidence: Math.min(a.score, b.score, c.score) * 100,

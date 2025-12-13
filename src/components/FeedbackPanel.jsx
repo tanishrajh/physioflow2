@@ -37,8 +37,7 @@ const FeedbackPanel = () => {
                         <h3 style={styles.cardTitle}>{ev.label}</h3>
                         <p style={styles.action}>{ev.actionText}</p>
                         <div style={styles.meta}>
-                            <span>Δ {Math.round(ev.diffDeg)}°</span>
-                            <span>{Math.round(ev.confidence)}% Conf</span>
+                            <span>{Math.round(ev.confidence)}% Confidence</span>
                         </div>
                     </div>
                 ))

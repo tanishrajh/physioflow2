@@ -10,8 +10,8 @@ export const squatRules = {
             idealAngle: 180,
             thresholds: { medium: 6, high: 12 },
             feedback: {
-                label: "Left knee collapsing",
-                action: "Push your left knee outward"
+                label: "Knees collapsing in",
+                action: "Push knees out"
             }
         },
         {
@@ -21,8 +21,8 @@ export const squatRules = {
             idealAngle: 180,
             thresholds: { medium: 6, high: 12 },
             feedback: {
-                label: "Right knee collapsing",
-                action: "Push your right knee outward"
+                label: "Knees collapsing in",
+                action: "Push knees out"
             }
         }
     ]
