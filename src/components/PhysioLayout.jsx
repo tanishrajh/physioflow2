@@ -6,8 +6,10 @@ import FeedbackPanel from './FeedbackPanel';
 import PoseWorker from '../workers/pose-analysis.worker.js?worker';
 import { useNavigate } from 'react-router-dom';
 import SessionReport from './SessionReport';
+import { useAuth } from '../context/AuthContext';
 
 const PhysioLayout = ({ exercise = 'squat' }) => {
+    const { user } = useAuth(); // Get current user
     const videoRef = useRef(null);
     const wrapperRef = useRef(null);
     const workerRef = useRef(null);
@@ -20,7 +22,7 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
     const [showReport, setShowReport] = useState(false);
     const [sessionStats, setSessionStats] = useState(null);
     const startTime = useRef(Date.now());
-    const issuesSet = useRef(new Set());
+    const issuesMap = useRef(new Map());
 
     // Accuracy Tracking
     const totalFrames = useRef(0);
@@ -28,7 +30,7 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
 
     useEffect(() => {
         startTime.current = Date.now();
-        issuesSet.current = new Set();
+        issuesMap.current = new Map();
         totalFrames.current = 0;
         goodFrames.current = 0;
 
@@ -48,8 +50,11 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
                 if (payload.feedbackEvents.length === 0) {
                     goodFrames.current++;
                 } else {
-                    // Track unique issues
-                    payload.feedbackEvents.forEach(ev => issuesSet.current.add(ev.label));
+                    // Track issue frequency
+                    payload.feedbackEvents.forEach(ev => {
+                        const currentCount = issuesMap.current.get(ev.label) || 0;
+                        issuesMap.current.set(ev.label, currentCount + 1);
+                    });
                 }
             }
         };
@@ -93,13 +98,24 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
             accuracy = Math.round((goodFrames.current / totalFrames.current) * 100);
         }
 
+        // Filter Persistent Issues (> 30 frames or ~1 second)
+        const significantIssues = [];
+        const THRESHOLD_FRAMES = 30;
+
+        issuesMap.current.forEach((count, label) => {
+            if (count > THRESHOLD_FRAMES) {
+                significantIssues.push(label);
+            }
+        });
+
         const newStat = {
             id: Date.now(),
+            userId: user?.id, // Link to current user
             date: new Date().toISOString(),
             durationId: durationMs,
             exercise: exercise,
             accuracy: accuracy,
-            issues: Array.from(issuesSet.current)
+            issues: significantIssues
         };
 
         setSessionStats(newStat);

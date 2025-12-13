@@ -5,8 +5,17 @@ import MapComponent from '../components/MapComponent';
 import { Activity, MapPin, FileText, User, PlayCircle, LogOut } from 'lucide-react';
 
 const DashboardPage = () => {
-    const { user, logout } = useAuth();
+    const { user, logout, refreshUser } = useAuth();
     const navigate = useNavigate();
+
+    // Auto-refresh user data to sync with PT updates
+    React.useEffect(() => {
+        if (!refreshUser) return;
+        const interval = setInterval(() => {
+            refreshUser();
+        }, 2000);
+        return () => clearInterval(interval);
+    }, [refreshUser]);
 
     const handleLogout = () => {
         logout();
@@ -18,11 +27,14 @@ const DashboardPage = () => {
     };
 
     const [history, setHistory] = React.useState([]);
+    const [showMap, setShowMap] = React.useState(false);
 
     React.useEffect(() => {
         try {
             const stored = JSON.parse(localStorage.getItem('physio_history') || '[]');
-            setHistory(stored);
+            // Filter by User ID (Strict: Only show my data)
+            const userHistory = stored.filter(item => item.userId === user.id);
+            setHistory(userHistory);
         } catch (e) {
             console.error("Storage access error:", e);
         }
@@ -46,7 +58,7 @@ const DashboardPage = () => {
             </div>
 
             <main style={styles.main}>
-                <h1 style={styles.welcome}>Welcome back, {user.name.split(' ')[0]}</h1>
+                <h1 style={styles.welcome}>Welcome, {user.name.split(' ')[0]}</h1>
 
                 {user.hasConsulted ? (
                     <div style={styles.grid}>
@@ -66,7 +78,7 @@ const DashboardPage = () => {
                                     <span>
                                         {user.report.ptName}
                                         <div style={{ fontSize: '0.8em', color: '#666', marginTop: '2px' }}>
-                                            📞 {user.report.ptContact}
+                                            📞 {user.report.ptContact || 'Contact Clinic'}
                                         </div>
                                     </span>
                                 </div>
@@ -89,18 +101,32 @@ const DashboardPage = () => {
                                     {user.report.prescribedExercise === 'bicepCurl' ? 'Bicep Curl (Arms)' : user.report.prescribedExercise}
                                 </div>
                                 <p>{user.report.prescriptionDetails}</p>
-                                <div style={styles.progressContainer}>
-                                    <div style={styles.progressBar}>
-                                        <div style={{ ...styles.progressFill, width: `${user.report.progress}%` }}></div>
-                                    </div>
-                                    <span style={styles.progressText}>{user.report.progress}% Complete</span>
-                                </div>
+
                                 <button style={styles.startBtn} onClick={startSession}>
                                     <PlayCircle size={20} />
                                     Start Session
                                 </button>
+
+                                <button
+                                    style={{ ...styles.startBtn, backgroundColor: '#2c2c2e', color: '#fff', marginTop: '5px' }}
+                                    onClick={() => setShowMap(!showMap)}
+                                >
+                                    <MapPin size={20} color="#ff3b30" />
+                                    {showMap ? 'Hide Clinics' : 'Find Nearby Clinics'}
+                                </button>
                             </div>
                         </div>
+
+                        {/* Map Card (Conditional) */}
+                        {showMap && (
+                            <div style={{ ...styles.card, gridColumn: '1 / -1' }}>
+                                <div style={styles.cardHeader}>
+                                    <MapPin color="#ff3b30" />
+                                    <h3>Nearby Specialists</h3>
+                                </div>
+                                <MapComponent />
+                            </div>
+                        )}
 
                         {/* History Card */}
                         <div style={{ ...styles.card, gridColumn: '1 / -1' }}>

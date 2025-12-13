@@ -1,26 +1,55 @@
 export const USERS = [
     {
         id: 'user_new',
+        username: 'user_new', // Login credentials
+        password: 'password',
+        role: 'patient',
         name: 'Rahul Kumar',
         avatar: 'https://i.pravatar.cc/150?u=user_new',
         hasConsulted: false,
-        report: null
+        report: null,
+        assignedPtId: null
     },
     {
         id: 'user_rehab',
+        username: 'user_rehab',
+        password: 'password',
+        role: 'patient',
         name: 'Priya Sharma',
         avatar: 'https://i.pravatar.cc/150?u=user_rehab',
         hasConsulted: true,
+        assignedPtId: 'pt_anjali',
         report: {
             ptName: 'Dr. Anjali Patil',
             ptContact: '+91 98765 43210',
             date: '2023-12-10',
             diagnosis: 'Bicep Tendonitis (Mild)',
             notes: 'Patient shows signs of inflammation. Recommended isolation exercises with strict form.',
-            prescribedExercise: 'bicepCurl',
+            prescribedExercise: 'bicepCurl', // writable by PT
             prescriptionDetails: '3 sets of 10 reps. Focus on keeping elbows pinned.',
             progress: 35
         }
+    },
+    // Physiotherapist Accounts
+    {
+        id: 'pt_anjali',
+        username: 'dr_anjali',
+        password: 'password',
+        role: 'physio',
+        name: 'Dr. Anjali Patil',
+        avatar: 'https://i.pravatar.cc/150?u=dr_anjali',
+        specialty: 'Sports Rehabilitation',
+        patients: ['user_rehab'] // Links to patient IDs
+    },
+    {
+        id: 'pt_ramesh',
+        username: 'dr_ramesh',
+        password: 'password',
+        role: 'physio',
+        name: 'Dr. Ramesh Gowda',
+        avatar: 'https://i.pravatar.cc/150?u=dr_ramesh',
+        specialty: 'Orthopedics',
+        patients: []
     }
 ];
 

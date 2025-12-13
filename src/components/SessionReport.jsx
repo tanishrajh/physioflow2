@@ -1,9 +1,23 @@
-import React, { useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+
+// ...
+
+
 import jsPDF from 'jspdf';
 import { Download, Send, CheckCircle } from 'lucide-react';
 
 const SessionReport = ({ sessionData, onClose }) => {
     const { durationId, exercise, accuracy, issues } = sessionData;
+    const { sendSessionToPT } = useAuth();
+
+    const sendToPT = () => {
+        const success = sendSessionToPT(sessionData);
+        if (success) {
+            alert("Report sent to Physiotherapist successfully!");
+        } else {
+            alert("Failed to send report. Please try again.");
+        }
+    };
 
     const generatePDF = () => {
         const doc = new jsPDF();
@@ -73,10 +87,7 @@ const SessionReport = ({ sessionData, onClose }) => {
         doc.save("physioflow-report.pdf");
     };
 
-    const sendToPT = () => {
-        // Mock send
-        alert("Report sent to Dr. Anjali Patil successfully!");
-    };
+
 
     return (
         <div style={styles.overlay}>

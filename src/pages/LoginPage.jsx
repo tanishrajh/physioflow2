@@ -1,15 +1,29 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Activity } from 'lucide-react';
+import { Activity, LogIn, User, Lock } from 'lucide-react';
+import Footer from '../components/Footer';
 
 const LoginPage = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-    const handleLogin = (userId) => {
-        login(userId);
-        navigate('/dashboard');
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const res = login(username, password);
+        if (res.success) {
+            // Redirect based on role
+            if (res.role === 'physio') {
+                navigate('/pt-dashboard');
+            } else {
+                navigate('/dashboard');
+            }
+        } else {
+            setError(res.message);
+        }
     };
 
     return (
@@ -22,44 +36,81 @@ const LoginPage = () => {
                 <p style={styles.subtitle}>AI-Powered Physiotherapy Assistant</p>
 
                 <div style={styles.card}>
-                    <h2 style={{ marginTop: 0 }}>Select a Demo Profile</h2>
-                    <div style={styles.buttonGroup}>
-                        <button style={styles.btn} onClick={() => handleLogin('user_new')}>
-                            <div style={styles.avatar}>RK</div>
-                            <div>
-                                <strong>Rahul Kumar (New)</strong>
-                                <div style={styles.subtext}>No history, needs PT</div>
-                            </div>
+                    <h2 style={{ marginTop: 0, marginBottom: '20px' }}>Welcome Back</h2>
+
+                    {error && <div style={styles.error}>{error}</div>}
+
+                    <form onSubmit={handleSubmit} style={styles.form}>
+                        <div style={styles.inputGroup}>
+                            <User size={20} color="#666" />
+                            <input
+                                type="text"
+                                placeholder="Username (e.g. user_rehab)"
+                                style={styles.input}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div style={styles.inputGroup}>
+                            <Lock size={20} color="#666" />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                style={styles.input}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <button type="submit" style={styles.btn}>
+                            Login <LogIn size={18} />
                         </button>
-                        <button style={styles.btn} onClick={() => handleLogin('user_rehab')}>
-                            <div style={{ ...styles.avatar, background: '#4cd964' }}>PT</div>
-                            <div>
-                                <strong>Priya Sharma (Rehab)</strong>
-                                <div style={styles.subtext}>Has active report</div>
-                            </div>
-                        </button>
+                    </form>
+
+                    <div style={styles.divider}>
+                        <span>or try demo accounts</span>
+                    </div>
+
+                    <div style={styles.demoLinks}>
+                        <button onClick={() => { setUsername('user_rehab'); setPassword('demo'); }} style={styles.demoBtn}>Priya (Patient)</button>
+                        <button onClick={() => { setUsername('dr_anjali'); setPassword('password'); }} style={{ ...styles.demoBtn, borderColor: '#00e5ff', color: '#00e5ff' }}>Dr. Anjali (Physio)</button>
+                    </div>
+
+                    <div style={styles.footerLink}>
+                        Don't have an account? <Link to="/register" style={styles.link}>Register</Link>
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };
 
 const styles = {
     container: {
-        height: '100vh',
-        width: '100vw',
+        minHeight: '100vh',
+        width: '100%',
+        overflowX: 'hidden', // Prevent horizontal scroll
         backgroundColor: '#0e0e10',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         color: 'white',
         fontFamily: 'Inter, sans-serif'
     },
     content: {
-        textAlign: 'center',
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
         maxWidth: '400px',
-        width: '90%'
+        padding: '20px'
     },
     logo: {
         display: 'flex',
@@ -84,45 +135,84 @@ const styles = {
         backgroundColor: '#1c1c1e',
         padding: '30px',
         borderRadius: '16px',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
+        boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+        width: '100%'
     },
-    buttonGroup: {
+    form: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px'
+        gap: '15px'
+    },
+    inputGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        backgroundColor: '#2c2c2e',
+        padding: '12px 16px',
+        borderRadius: '12px',
+        border: '1px solid #444'
+    },
+    input: {
+        background: 'none',
+        border: 'none',
+        color: 'white',
+        fontSize: '1rem',
+        outline: 'none',
+        width: '100%'
     },
     btn: {
         display: 'flex',
         alignItems: 'center',
-        gap: '16px',
-        padding: '16px',
-        backgroundColor: '#2c2c2e',
-        border: '1px solid #444',
-        borderRadius: '12px',
-        color: 'white',
-        cursor: 'pointer',
-        textAlign: 'left',
-        transition: 'background 0.2s',
-        ':hover': {
-            backgroundColor: '#333'
-        }
-    },
-    avatar: {
-        width: '40px',
-        height: '40px',
-        borderRadius: '50%',
+        justifyContent: 'center',
+        gap: '10px',
+        padding: '14px',
         backgroundColor: '#00e5ff',
         color: '#000',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        border: 'none',
+        borderRadius: '12px',
         fontWeight: 'bold',
+        cursor: 'pointer',
+        marginTop: '10px'
+    },
+    error: {
+        color: '#ff3b30',
+        backgroundColor: 'rgba(255, 59, 48, 0.1)',
+        padding: '10px',
+        borderRadius: '8px',
+        marginBottom: '15px',
+        fontSize: '0.9rem',
+        textAlign: 'center'
+    },
+    footerLink: {
+        marginTop: '20px',
+        textAlign: 'center',
+        fontSize: '0.9rem',
+        color: '#888'
+    },
+    link: {
+        color: '#00e5ff',
+        textDecoration: 'none',
+        fontWeight: 'bold'
+    },
+    divider: {
+        margin: '20px 0',
+        textAlign: 'center',
+        color: '#555',
         fontSize: '0.8rem'
     },
-    subtext: {
-        fontSize: '0.8rem',
+    demoLinks: {
+        display: 'flex',
+        gap: '10px',
+        justifyContent: 'center'
+    },
+    demoBtn: {
+        background: 'none',
+        border: '1px solid #444',
         color: '#aaa',
-        fontWeight: 'normal'
+        padding: '5px 10px',
+        borderRadius: '20px',
+        fontSize: '0.8rem',
+        cursor: 'pointer'
     }
 };
 
