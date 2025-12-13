@@ -63,7 +63,12 @@ const DashboardPage = () => {
                                 </div>
                                 <div style={styles.row}>
                                     <span style={styles.label}>Physiotherapist:</span>
-                                    <span>{user.report.ptName}</span>
+                                    <span>
+                                        {user.report.ptName}
+                                        <div style={{ fontSize: '0.8em', color: '#666', marginTop: '2px' }}>
+                                            📞 {user.report.ptContact}
+                                        </div>
+                                    </span>
                                 </div>
                                 <div style={styles.row}>
                                     <span style={styles.label}>Date:</span>

@@ -13,6 +13,7 @@ export const USERS = [
         hasConsulted: true,
         report: {
             ptName: 'Dr. Anjali Patil',
+            ptContact: '+91 98765 43210',
             date: '2023-12-10',
             diagnosis: 'Bicep Tendonitis (Mild)',
             notes: 'Patient shows signs of inflammation. Recommended isolation exercises with strict form.',
@@ -28,11 +29,15 @@ export const PHYSIOTHERAPISTS = [
         id: 1,
         name: 'Dr. Anjali Patil',
         specialty: 'Sports Rehabilitation',
-        location: [13.3269, 77.1261], // SIT Main Block area
+        location: [13.3209, 77.1313], // SIT Main Block area
         address: 'SIT Campus, Tumkur',
         rating: 4.9,
         reviews: 124,
-        image: 'https://i.pravatar.cc/150?u=dr_anjali'
+        image: 'https://i.pravatar.cc/150?u=dr_anjali',
+        contact: {
+            phone: '+91 98765 43210',
+            email: 'anjali.p@sit.ac.in'
+        }
     },
     {
         id: 2,
@@ -42,7 +47,11 @@ export const PHYSIOTHERAPISTS = [
         address: 'BH Road, Tumkur',
         rating: 4.7,
         reviews: 89,
-        image: 'https://i.pravatar.cc/150?u=dr_ramesh'
+        image: 'https://i.pravatar.cc/150?u=dr_ramesh',
+        contact: {
+            phone: '+91 91234 56789',
+            email: 'ramesh.ortho@gmail.com'
+        }
     },
     {
         id: 3,
@@ -52,6 +61,10 @@ export const PHYSIOTHERAPISTS = [
         address: 'Batawadi, Tumkur',
         rating: 4.5,
         reviews: 210,
-        image: 'https://i.pravatar.cc/150?u=clinic_sit'
+        image: 'https://i.pravatar.cc/150?u=clinic_sit',
+        contact: {
+            phone: '+91 80 2233 4455',
+            email: 'contact@siddaganga.org'
+        }
     }
 ];

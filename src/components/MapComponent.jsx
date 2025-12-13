@@ -30,8 +30,12 @@ const MapComponent = () => {
                     <Marker key={pt.id} position={pt.location}>
                         <Popup>
                             <strong>{pt.name}</strong><br />
-                            {pt.specialty}<br />
-                            ⭐ {pt.rating} ({pt.reviews})
+                            <span style={{ fontSize: '0.85em', color: '#666' }}>{pt.specialty}</span><br />
+                            <div style={{ margin: '5px 0', fontSize: '0.9em' }}>
+                                📞 <a href={`tel:${pt.contact.phone}`} style={{ textDecoration: 'none', color: '#007bff' }}>{pt.contact.phone}</a><br />
+                                📧 <a href={`mailto:${pt.contact.email}`} style={{ textDecoration: 'none', color: '#007bff' }}>{pt.contact.email}</a>
+                            </div>
+                            ⭐ {pt.rating} ({pt.reviews} reviews)
                         </Popup>
                     </Marker>
                 ))}
