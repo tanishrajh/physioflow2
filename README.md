@@ -3,7 +3,6 @@
 
 PhysioFlow is a cutting-edge web application designed to democratize physiotherapy. Using advanced computer vision (**MoveNet**) directly in the browser, it provides real-time feedback, rep counting, and detailed performance analysis to help patients recover faster and safer from the comfort of their homes.
 
-![PhysioFlow Banner](https://via.placeholder.com/1200x400?text=PhysioFlow+AI+Assistant)
 
 ## 🚀 Key Features
 
