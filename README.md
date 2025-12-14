@@ -88,9 +88,7 @@ PhysioFlow has two main modes:
 *   **Wearable Sync**: Integration with Apple Watch/Fitbit for heart rate data.
 *   **AR Glasses Support**: Verify form via Heads-Up Display.
 
-## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-*Built with ❤️ for WIE Hackathon at SIT Tumkur*
+*Built with ❤️by [Tanishraj H](https://www.linkedin.com/in/tanishrajh/)
