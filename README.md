@@ -34,7 +34,7 @@ PhysioFlow is a cutting-edge web application designed to democratize physiothera
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/Tanishraj18/Physioflow2.git
+    git clone https://github.com/tanishrajh/Physioflow2.git
     cd physioflow
     ```
 
@@ -55,7 +55,7 @@ PhysioFlow is a cutting-edge web application designed to democratize physiothera
 PhysioFlow has two main modes:
 
 ### 1. Rehab Mode (Patient: Priya)
-*   **Login**: Select "Priya Sharma" (Rehab Profile).
+*   **Login**: Select "Priya (Patient)" from the demo links or register a new account.
 *   **Dashboard**: View your prescribed exercise (e.g., Bicep Curl) and recent history.
 *   **Start Session**:
     *   Stand in frame.
@@ -64,10 +64,18 @@ PhysioFlow has two main modes:
     *   Receive feedback on **Elbow Stability** and **Shoulder Symmetry**.
 *   **Report**: End the session to see your accuracy and download a PDF report.
 
-### 2. Discovery Mode (New User: Rahul)
-*   **Login**: Select "Rahul Kumar" (New User).
-*   **Dashboard**: View the **Map** to find nearby specialists.
-*   **Contact**: Click on markers to see phone numbers and emails of doctors.
+### 2. Physiotherapist Mode (Dr. Anjali)
+*   **Login**: Select "Dr. Anjali (Physio)" from the demo links.
+*   **PT Dashboard**:
+    *   **Patient List**: View all registered and demo patients.
+    *   **Management**: Click a patient to view their session history, accuracy trends, and issues.
+    *   **Prescription**: Assign new exercises (Squat, Shoulder Press) and write consultation notes.
+    *   **Remote Monitoring**: Updates are instantly reflected on the patient's dashboard.
+
+### 3. Discovery Mode (New User)
+*   **Register**: Create a new account.
+*   **Dashboard**: By default, new users start in Discovery Mode to find clinics.
+*   **Map**: Interactive map centered on SIT Tumkur to locate nearby specialists.
 
 ## 🧠 How It Works (Architecture)
 
