@@ -28,7 +28,7 @@ export const squatRules = {
     ],
     repLogic: {
         type: 'angle',
-        joint: 'left_knee', // Simplified for demo
+        joint: 'left_knee',
         relatedJoints: ['left_hip', 'left_knee', 'left_ankle'],
         phases: {
             extension: { threshold: 160, guide: "Squat Down", greaterThan: true, next: 'flexion' },

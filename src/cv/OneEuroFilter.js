@@ -49,27 +49,27 @@ export class OneEuroFilter {
   }
 
   filter(x, y, timestamp) {
-    // Convert timestamp to seconds
+    // convert timestamp to seconds
     const t = timestamp / 1000;
     const lastT = this.lastTimestamp / 1000;
     const dt = t - lastT;
     this.lastTimestamp = timestamp;
 
-    // Avoid division by zero or too small dt
+    // avoid division by zero or too small dt
     if (dt <= 0) return { x, y }; 
 
-    // Compute derivative (speed)
+    // compute derivative (speed)
     const dx = (x - this.xFilter.lastRawValue()) / dt;
     const dy = (y - this.yFilter.lastRawValue()) / dt;
 
     const edx = this.dxFilter.filter(dx, this.alpha(this.dCutoff, dt));
     const edy = this.dyFilter.filter(dy, this.alpha(this.dCutoff, dt));
 
-    // Compute cutoff based on speed
+    // compute cutoff based on speed
     const cutoffX = this.minCutoff + this.beta * Math.abs(edx);
     const cutoffY = this.minCutoff + this.beta * Math.abs(edy);
 
-    // Filter position
+    // filter position
     const smoothedX = this.xFilter.filter(x, this.alpha(cutoffX, dt));
     const smoothedY = this.yFilter.filter(y, this.alpha(cutoffY, dt));
 

@@ -22,7 +22,7 @@ const SessionReport = ({ sessionData, onClose }) => {
     const generatePDF = () => {
         const doc = new jsPDF();
 
-        // Header Background
+        // header background
         doc.setFillColor(30, 30, 30);
         doc.rect(0, 0, 210, 40, 'F');
 
@@ -32,7 +32,7 @@ const SessionReport = ({ sessionData, onClose }) => {
         doc.setFontSize(10);
         doc.text("AI-Powered Analysis", 160, 25);
 
-        // Details
+        // details
         doc.setTextColor(0, 0, 0);
         doc.setFontSize(12);
         doc.text(`Patient: ${user?.name || 'Guest'}`, 20, 55);
@@ -40,7 +40,7 @@ const SessionReport = ({ sessionData, onClose }) => {
         doc.setDrawColor(200, 200, 200);
         doc.line(20, 60, 190, 60);
 
-        // Stats
+        // stats
         doc.setFontSize(14);
         doc.text("Performance Metrics", 20, 75);
 
@@ -49,7 +49,7 @@ const SessionReport = ({ sessionData, onClose }) => {
         doc.text(`Duration: ${Math.round(durationId / 1000)}s`, 80, 90);
         doc.text(`Accuracy: ${accuracy}%`, 140, 90);
 
-        // Dynamic Metrics
+        // dynamic metrics
         const stabilityScore = Math.max(0, Math.min(100, Math.round(accuracy - (issues.length * 5))));
         const romScore = Math.max(0, Math.min(100, Math.round(accuracy + (Math.random() * 10 - 5))));
         const tempoCheck = accuracy > 75 ? "Good" : "Needs Improvement";
@@ -58,7 +58,7 @@ const SessionReport = ({ sessionData, onClose }) => {
         doc.text(`Range of Motion: ${romScore}/100`, 80, 100);
         doc.text(`Tempo Check: ${tempoCheck}`, 140, 100);
 
-        // Issues
+        // issues
         doc.setFontSize(14);
         doc.text("Issues Detected", 20, 120);
         if (issues.length > 0) {
@@ -72,14 +72,14 @@ const SessionReport = ({ sessionData, onClose }) => {
             doc.text("• No major issues detected. Great form!", 25, 135);
         }
 
-        // Physio Note
+        // physio note
         doc.setTextColor(0, 0, 0);
         doc.setFontSize(14);
         doc.text("Physiotherapist Assessment", 20, 160);
         doc.setFontSize(11);
         doc.setFont(undefined, 'italic');
 
-        // Use actual PT notes if available, otherwise use AI fallback
+        // use actual pt notes if available, otherwise use ai fallback
         const assessment = user?.report?.notes
             ? user.report.notes
             : (accuracy > 80

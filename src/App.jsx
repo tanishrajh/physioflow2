@@ -8,7 +8,7 @@ import DashboardPage from './pages/DashboardPage';
 import PTDashboardPage from './pages/PTDashboardPage';
 import PhysioLayout from './components/PhysioLayout';
 
-// Protected Route Component
+// protected route component
 const ProtectedRoute = ({ children, allowedRole }) => {
   const { user, loading } = useAuth();
 
@@ -18,19 +18,19 @@ const ProtectedRoute = ({ children, allowedRole }) => {
 
   if (!user) return <Navigate to="/login" />;
 
-  // Role Check
+  // role check
   if (allowedRole && user.role !== allowedRole) {
-    // Redirect to their appropriate dashboard
+    // redirect to their appropriate dashboard
     return <Navigate to={user.role === 'physio' ? '/pt-dashboard' : '/dashboard'} />;
   }
 
   return children;
 };
 
-// Wrapper to pass prescribed exercise
+// wrapper to pass prescribed exercise
 const SessionWrapper = () => {
   const { user } = useAuth();
-  // Default to bicepCurl if not defined
+  // default to bicepcurl if not defined
   const exercise = user?.report?.prescribedExercise || 'bicepCurl';
   return <PhysioLayout exercise={exercise} />;
 };

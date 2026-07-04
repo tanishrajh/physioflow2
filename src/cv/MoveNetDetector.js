@@ -17,7 +17,7 @@ export class MoveNetDetector {
         const model = poseDetection.SupportedModels.MoveNet;
         const detectorConfig = {
             modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
-            enableSmoothing: false // We do our own smoothing
+            enableSmoothing: false // we do our own smoothing
         };
         this.detector = await poseDetection.createDetector(model, detectorConfig);
     }
@@ -64,12 +64,12 @@ export class MoveNetDetector {
             try {
                 const poses = await this.detector.estimatePoses(this.video, {
                     maxPoses: 1,
-                    flipHorizontal: false // We mirror via CSS/Canvas context
+                    flipHorizontal: false // we mirror via css/canvas context
                 });
 
                 if (poses && poses.length > 0) {
                     const pose = poses[0];
-                    // Format to our standard
+                    // format to our standard
                     const poseFrame = {
                         frameId: Date.now(),
                         timestamp: Date.now(),

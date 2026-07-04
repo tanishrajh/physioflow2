@@ -9,17 +9,17 @@ const PTDashboardPage = () => {
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [patientHistory, setPatientHistory] = useState([]);
 
-    // Auto-refresh patient list
+    // auto-refresh patient list
     useEffect(() => {
         const fetchPatients = () => {
             setPatients(getAllPatients());
         };
         fetchPatients();
-        const interval = setInterval(fetchPatients, 2000); // Check every 2s
+        const interval = setInterval(fetchPatients, 2000); // check every 2s
         return () => clearInterval(interval);
-    }, [user]); // Re-run if user changes (or on mount)
+    }, [user]); // re-run if user changes (or on mount)
 
-    // Edit Form State
+    // edit form state
     const [exercise, setExercise] = useState('bicepCurl');
     const [notes, setNotes] = useState('');
 
@@ -28,10 +28,10 @@ const PTDashboardPage = () => {
         setExercise(p.report?.prescribedExercise || 'bicepCurl');
         setNotes(p.report?.notes || '');
 
-        // Fetch History
+        // fetch history
         try {
             const allHistory = JSON.parse(localStorage.getItem('physio_history') || '[]');
-            const userHistory = allHistory.filter(h => h.userId == p.id); // Filter by ID
+            const userHistory = allHistory.filter(h => h.userId == p.id); // filter by id
             setPatientHistory(userHistory);
         } catch (e) {
             console.error("Error loading patient history", e);
@@ -149,11 +149,11 @@ const PTDashboardPage = () => {
                                         <line x1="0" y1="100" x2="300" y2="100" stroke="#333" strokeDasharray="4" />
 
                                         {(() => {
-                                            // Prepare Data: Sort Oldest to Newest, take last 10
+                                            // prepare data: sort oldest to newest, take last 10
                                             const data = [...patientHistory].reverse().slice(-10);
                                             const points = data.map((d, i) => {
                                                 const x = (i / (data.length - 1 || 1)) * 300;
-                                                const y = 100 - d.accuracy; // Invert for SVG Y-coord
+                                                const y = 100 - d.accuracy; // invert for svg y-coord
                                                 return `${x},${y}`;
                                             }).join(' ');
 
@@ -301,7 +301,7 @@ const styles = {
         alignItems: 'center',
         gap: '6px'
     },
-    // Modal Styles
+    // modal styles
     modalOverlay: {
         position: 'fixed',
         top: 0,
@@ -322,7 +322,7 @@ const styles = {
         borderRadius: '20px',
         border: '1px solid #333',
         overflow: 'hidden',
-        maxHeight: '90vh', // Prevent full screen
+        maxHeight: '90vh', // prevent full screen
         display: 'flex',
         flexDirection: 'column'
     },
@@ -342,7 +342,7 @@ const styles = {
     },
     modalBody: {
         padding: '20px',
-        overflowY: 'auto', // Enable scrolling
+        overflowY: 'auto', // enable scrolling
         flex: 1
     },
     inputGroup: {

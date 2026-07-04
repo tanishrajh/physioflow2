@@ -34,7 +34,7 @@ const styles = {
         backgroundColor: 'rgba(28, 28, 30, 0.5)',
         backdropFilter: 'blur(10px)',
         borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-        marginTop: 'auto', // Pushes footer to bottom if flex container
+        marginTop: 'auto', // pushes footer to bottom if flex container
     },
     content: {
         maxWidth: '1200px',

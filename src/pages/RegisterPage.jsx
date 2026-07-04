@@ -126,7 +126,7 @@ const styles = {
     container: {
         minHeight: '100vh',
         width: '100%',
-        overflowX: 'hidden', // Added safety
+        overflowX: 'hidden', // added safety
         backgroundColor: '#0e0e10',
         display: 'flex',
         flexDirection: 'column',

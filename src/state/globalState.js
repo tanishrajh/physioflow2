@@ -7,7 +7,7 @@ window.__PHYSIO__ = {
     poseFrame: null,
     smoothedPose: null,
     feedbackEvents: [],
-    currentExercise: 'squat', // Default
+    currentExercise: 'squat', // default
     meta: {
         fps: 0,
         processingTime: 0

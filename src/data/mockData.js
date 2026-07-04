@@ -1,7 +1,7 @@
 export const USERS = [
     {
         id: 'user_new',
-        username: 'user_new', // Login credentials
+        username: 'user_new', // login credentials
         password: 'password',
         role: 'patient',
         name: 'Rahul Kumar',
@@ -25,12 +25,12 @@ export const USERS = [
             date: '2023-12-10',
             diagnosis: 'Bicep Tendonitis (Mild)',
             notes: 'Patient shows signs of inflammation. Recommended isolation exercises with strict form.',
-            prescribedExercise: 'bicepCurl', // writable by PT
+            prescribedExercise: 'bicepCurl', // writable by pt
             prescriptionDetails: '3 sets of 10 reps. Focus on keeping elbows pinned.',
             progress: 35
         }
     },
-    // Physiotherapist Accounts
+    // physiotherapist accounts
     {
         id: 'pt_anjali',
         username: 'dr_anjali',
@@ -39,7 +39,7 @@ export const USERS = [
         name: 'Dr. Anjali Patil',
         avatar: 'https://i.pravatar.cc/150?u=dr_anjali',
         specialty: 'Sports Rehabilitation',
-        patients: ['user_rehab'] // Links to patient IDs
+        patients: ['user_rehab'] // links to patient ids
     },
     {
         id: 'pt_ramesh',
@@ -58,7 +58,7 @@ export const PHYSIOTHERAPISTS = [
         id: 1,
         name: 'Dr. Anjali Patil',
         specialty: 'Sports Rehabilitation',
-        location: [13.3209, 77.1313], // SIT Main Block area
+        location: [13.3209, 77.1313], // sit main block area
         address: 'SIT Campus, Tumkur',
         rating: 4.9,
         reviews: 124,
@@ -72,7 +72,7 @@ export const PHYSIOTHERAPISTS = [
         id: 2,
         name: 'Dr. Ramesh Gowda',
         specialty: 'Orthopedics',
-        location: [13.3300, 77.1280], // Nearby
+        location: [13.3300, 77.1280], // nearby
         address: 'BH Road, Tumkur',
         rating: 4.7,
         reviews: 89,
@@ -86,7 +86,7 @@ export const PHYSIOTHERAPISTS = [
         id: 3,
         name: 'Siddaganga Physio Center',
         specialty: 'General Physio',
-        location: [13.3250, 77.1240], // Nearby
+        location: [13.3250, 77.1240], // nearby
         address: 'Batawadi, Tumkur',
         rating: 4.5,
         reviews: 210,

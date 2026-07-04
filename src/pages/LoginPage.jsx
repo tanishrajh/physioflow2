@@ -15,7 +15,7 @@ const LoginPage = () => {
         e.preventDefault();
         const res = login(username, password);
         if (res.success) {
-            // Redirect based on role
+            // redirect based on role
             if (res.role === 'physio') {
                 navigate('/pt-dashboard');
             } else {
@@ -93,7 +93,7 @@ const styles = {
     container: {
         minHeight: '100vh',
         width: '100%',
-        overflowX: 'hidden', // Prevent horizontal scroll
+        overflowX: 'hidden', // prevent horizontal scroll
         backgroundColor: '#0e0e10',
         display: 'flex',
         flexDirection: 'column',

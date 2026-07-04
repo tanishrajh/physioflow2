@@ -9,7 +9,7 @@ const IntroPage = () => {
     const [text, setText] = useState('');
     const [index, setIndex] = useState(0);
 
-    // Typewriter Effect
+    // typewriter effect
     useEffect(() => {
         if (index < fullText.length) {
             const timeout = setTimeout(() => {
@@ -67,7 +67,7 @@ const styles = {
         justifyContent: 'space-between',
         color: 'white',
         fontFamily: 'Inter, sans-serif',
-        overflowX: 'hidden', // Fix bottom scrollbar
+        overflowX: 'hidden', // fix bottom scrollbar
         overflowY: 'auto'
     },
     background: {
@@ -183,7 +183,7 @@ const styles = {
     }
 };
 
-// Inject CSS animations dynamically
+// inject css animations dynamically
 const styleSheet = document.createElement("style");
 styleSheet.innerText = `
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }

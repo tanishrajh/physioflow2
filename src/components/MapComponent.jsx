@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { PHYSIOTHERAPISTS } from '../data/mockData';
 import L from 'leaflet';
 
-// Fix Leaflet default icon issue
+// fix leaflet default icon issue
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 

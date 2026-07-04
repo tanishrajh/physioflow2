@@ -20,12 +20,12 @@ const CanvasOverlay = ({ width, height }) => {
     useEffect(() => {
         const ctx = canvasRef.current.getContext('2d');
 
-        // Scale for mirroring
-        // The video is mirrored via CSS scaleX(-1) usually.
-        // But we are drawing on a canvas on TOP of it.
-        // If we want to match the mirrored video, we should also mirror the canvas?
-        // User requirement: "Mirror drawing context to match mirrored video"
-        // "Never draw text mirrored" -> This implies we transform the context.
+        // scale for mirroring
+        // the video is mirrored via css scalex(-1) usually.
+        // but we are drawing on a canvas on top of it.
+        // if we want to match the mirrored video, we should also mirror the canvas?
+        // user requirement: "mirror drawing context to match mirrored video"
+        // "never draw text mirrored" -> this implies we transform the context.
 
         const loop = () => {
             const state = getPhysioState();
@@ -38,12 +38,12 @@ const CanvasOverlay = ({ width, height }) => {
                 ctx.translate(width, 0);
                 ctx.scale(-1, 1);
 
-                // Draw Skeleton
+                // draw skeleton
                 if (pose.keypoints) {
                     const keypointMap = {};
                     pose.keypoints.forEach(kp => keypointMap[kp.name] = kp);
 
-                    // Draw Lines
+                    // draw lines
                     ctx.strokeStyle = 'white';
                     ctx.lineWidth = 4;
                     ctx.beginPath();
@@ -51,9 +51,9 @@ const CanvasOverlay = ({ width, height }) => {
                     KEYPOINT_PAIRS.forEach(([p1, p2]) => {
                         const kp1 = keypointMap[p1];
                         const kp2 = keypointMap[p2];
-                        // Check visibility from worker state if available? 
-                        // Using simplistic score check here as fallback, logic calls for strict gating.
-                        // Ideally we read 'visibleJoints' from state, but for now fallback to score >= 0.35
+                        // check visibility from worker state if available?
+                        // using simplistic score check here as fallback, logic calls for strict gating.
+                        // ideally we read 'visiblejoints' from state, but for now fallback to score >= 0.35
                         if (kp1 && kp2 && kp1.score >= 0.35 && kp2.score >= 0.35) {
                             ctx.moveTo(kp1.x, kp1.y);
                             ctx.lineTo(kp2.x, kp2.y);
@@ -61,7 +61,7 @@ const CanvasOverlay = ({ width, height }) => {
                     });
                     ctx.stroke();
 
-                    // Draw Points
+                    // draw points
                     pose.keypoints.forEach(kp => {
                         if (kp.score >= 0.35) {
                             ctx.fillStyle = '#00e5ff';

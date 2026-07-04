@@ -8,16 +8,16 @@ const ArrowsOverlay = ({ width, height }) => {
     useEffect(() => {
         const loop = () => {
             const state = getPhysioState();
-            // Only react state update if events changed significantly or simple polling
-            // For smoothness, we might want to drive animations via JS/CSS and just update props.
-            // But React reconciliation at 60fps is risky.
-            // Let's rely on React for now for simplicity of implementation.
+            // only react state update if events changed significantly or simple polling
+            // for smoothness, we might want to drive animations via js/css and just update props.
+            // but react reconciliation at 60fps is risky.
+            // let's rely on react for now for simplicity of implementation.
 
             if (state.feedbackEvents && state.feedbackEvents.length !== events.length) {
                 setEvents([...state.feedbackEvents]);
             } else if (state.feedbackEvents && state.feedbackEvents.length > 0) {
-                // Deep check or just timestamp? 
-                // We'll trust the worker output.
+                // deep check or just timestamp?
+                // we'll trust the worker output.
                 setEvents([...state.feedbackEvents]);
             } else {
                 if (events.length > 0) setEvents([]);
@@ -27,7 +27,7 @@ const ArrowsOverlay = ({ width, height }) => {
         };
         rafRef.current = requestAnimationFrame(loop);
         return () => cancelAnimationFrame(rafRef.current);
-    }, []); // Remove dependency on 'events' to avoid re-loop creation
+    }, []); // remove dependency on 'events' to avoid re-loop creation
 
     return (
         <svg
@@ -39,7 +39,7 @@ const ArrowsOverlay = ({ width, height }) => {
                 left: 0,
                 pointerEvents: 'none',
                 zIndex: 20,
-                transform: 'scaleX(-1)' // Mirror to match video
+                transform: 'scaleX(-1)' // mirror to match video
             }}
         >
             {events.map((ev, idx) => (
@@ -57,11 +57,11 @@ const ArrowsOverlay = ({ width, height }) => {
 
 const Arrow = ({ x, y, angleRad, severity }) => {
     const color = severity === 'high' ? '#ff3b30' : severity === 'medium' ? '#ff9500' : '#4cd964';
-    // Simplified arrow mostly pointing outward/inward based on heuristic for now.
-    // The worker didn't fully implement angleRad calculation, let's just draw a generic "fix this" marker or assume a direction.
-    // User requested "Directional arrows".
-    // For Valgus, "push outward" means arrow pointing away from center.
-    // We'll simulate a dynamic arrow.
+    // simplified arrow mostly pointing outward/inward based on heuristic for now.
+    // the worker didn't fully implement anglerad calculation, let's just draw a generic "fix this" marker or assume a direction.
+    // user requested "directional arrows".
+    // for valgus, "push outward" means arrow pointing away from center.
+    // we'll simulate a dynamic arrow.
 
     return (
         <g transform={`translate(${x}, ${y})`}>

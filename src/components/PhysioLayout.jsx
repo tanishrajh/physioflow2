@@ -9,7 +9,7 @@ import SessionReport from './SessionReport';
 import { useAuth } from '../context/AuthContext';
 
 const PhysioLayout = ({ exercise = 'squat' }) => {
-    const { user } = useAuth(); // Get current user
+    const { user } = useAuth(); // get current user
     const videoRef = useRef(null);
     const wrapperRef = useRef(null);
     const workerRef = useRef(null);
@@ -18,13 +18,13 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
-    // Session State
+    // session state
     const [showReport, setShowReport] = useState(false);
     const [sessionStats, setSessionStats] = useState(null);
     const startTime = useRef(Date.now());
     const issuesMap = useRef(new Map());
 
-    // Accuracy Tracking
+    // accuracy tracking
     const totalFrames = useRef(0);
     const goodFrames = useRef(0);
 
@@ -34,7 +34,7 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
         totalFrames.current = 0;
         goodFrames.current = 0;
 
-        // Initialize Worker
+        // initialize worker
         workerRef.current = new PoseWorker();
         workerRef.current.onmessage = (e) => {
             const { type, payload } = e.data;
@@ -45,12 +45,12 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
                     window.__PHYSIO__.repStats = payload.repStats;
                 }
 
-                // Track accuracy
+                // track accuracy
                 totalFrames.current++;
                 if (payload.feedbackEvents.length === 0) {
                     goodFrames.current++;
                 } else {
-                    // Track issue frequency
+                    // track issue frequency
                     payload.feedbackEvents.forEach(ev => {
                         const currentCount = issuesMap.current.get(ev.label) || 0;
                         issuesMap.current.set(ev.label, currentCount + 1);
@@ -59,16 +59,16 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
             }
         };
 
-        // Initialize Exercise
+        // initialize exercise
         workerRef.current.postMessage({ type: 'setExercise', payload: { exerciseId: exercise } });
 
-        // Initialize CV
+        // initialize cv
         const initCV = async () => {
             const detector = new MoveNetDetector();
             await detector.initialize();
             const video = await detector.setupCamera(videoRef.current);
             setDimensions({ width: video.videoWidth, height: video.videoHeight });
-            setIsLoading(false); // Camera ready
+            setIsLoading(false); // camera ready
 
             detector.start((poseFrame) => {
                 if (window.__PHYSIO__) {
@@ -89,16 +89,16 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
     }, [exercise]);
 
     const handleExit = () => {
-        // Calculate Stats
+        // calculate stats
         const durationMs = Date.now() - startTime.current;
 
-        // Calculate real accuracy
+        // calculate real accuracy
         let accuracy = 100;
         if (totalFrames.current > 0) {
             accuracy = Math.round((goodFrames.current / totalFrames.current) * 100);
         }
 
-        // Filter Persistent Issues (> 30 frames or ~1 second)
+        // filter persistent issues (> 30 frames or ~1 second)
         const significantIssues = [];
         const THRESHOLD_FRAMES = 30;
 
@@ -110,7 +110,7 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
 
         const newStat = {
             id: Date.now(),
-            userId: user?.id, // Link to current user
+            userId: user?.id, // link to current user
             date: new Date().toISOString(),
             durationId: durationMs,
             exercise: exercise,
@@ -120,7 +120,7 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
 
         setSessionStats(newStat);
 
-        // Save to LocalStorage
+        // save to localstorage
         try {
             const history = JSON.parse(localStorage.getItem('physio_history') || '[]');
             history.unshift(newStat);
@@ -176,7 +176,7 @@ const PhysioLayout = ({ exercise = 'squat' }) => {
                         style={{
                             width: '100%',
                             height: '100%',
-                            transform: 'scaleX(-1)', // Mirror video
+                            transform: 'scaleX(-1)', // mirror video
                             objectFit: 'cover'
                         }}
                         playsInline

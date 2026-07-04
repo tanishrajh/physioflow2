@@ -6,7 +6,7 @@ export const bicepCurlRules = {
         {
             joint: "left_elbow",
             type: "stability",
-            relatedJoints: ["left_elbow", "left_shoulder", "left_hip"], // Vertex: Shoulder
+            relatedJoints: ["left_elbow", "left_shoulder", "left_hip"],
             idealAngle: 0,
             thresholds: { medium: 20, high: 35 },
             feedback: {
@@ -17,7 +17,7 @@ export const bicepCurlRules = {
         {
             joint: "right_elbow",
             type: "stability",
-            relatedJoints: ["right_elbow", "right_shoulder", "right_hip"], // Vertex: Shoulder
+            relatedJoints: ["right_elbow", "right_shoulder", "right_hip"],
             idealAngle: 0,
             thresholds: { medium: 20, high: 35 },
             feedback: {
@@ -28,7 +28,7 @@ export const bicepCurlRules = {
         {
             joint: "torso",
             type: "stability",
-            relatedJoints: ["right_shoulder", "right_hip", "right_knee"], // Vertex: Hip
+            relatedJoints: ["right_shoulder", "right_hip", "right_knee"],
             idealAngle: 180,
             thresholds: { medium: 10, high: 20 },
             feedback: {
@@ -49,7 +49,7 @@ export const bicepCurlRules = {
     ],
     repLogic: {
         type: 'angle',
-        joint: 'right_elbow', // For demo, assuming right arm user
+        joint: 'right_elbow',
         relatedJoints: ['right_shoulder', 'right_elbow', 'right_wrist'],
         phases: {
             extension: { threshold: 150, guide: "Curl Up", greaterThan: true, next: 'flexion' },

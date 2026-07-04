@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Load user from session on start (Use SessionStorage for multi-tab support)
+    // load user from session on start (use sessionstorage for multi-tab support)
     useEffect(() => {
         try {
             const storedUser = sessionStorage.getItem('physio_user');
@@ -19,10 +19,10 @@ export const AuthProvider = ({ children }) => {
         } catch (e) {
             console.error("Session storage access error:", e);
         }
-        setLoading(false); // Auth check complete
+        setLoading(false); // auth check complete
     }, []);
 
-    // Helper: Refresh current user data from DB (for real-time updates)
+    // helper: refresh current user data from db (for real-time updates)
     const refreshUser = () => {
         if (!user) return;
 
@@ -33,13 +33,13 @@ export const AuthProvider = ({ children }) => {
 
             if (!updatedUser) {
                 updatedUser = DEMO_USERS.find(u => u.username === user.username);
-                // If demo user, we might have overrides in local storage? For now, we assume demo users are static unless we implement deep merge.
-                // Actually, for the demo "Consultation Update" to work on User Dashboard, we need to read the latest state.
-                // Since we wrote updatePatientPrescription to modify 'physio_users_db' even for demo users (by copying them? No, the previous code updated localUsers findIndex. If demo user wasn't in localUsers, it failed silently? Let's check updatePatientPrescription).
+                // if demo user, we might have overrides in local storage? for now, we assume demo users are static unless we implement deep merge.
+                // actually, for the demo "consultation update" to work on user dashboard, we need to read the latest state.
+                // since we wrote updatepatientprescription to modify 'physio_users_db' even for demo users (by copying them? no, the previous code updated localusers findindex. if demo user wasn't in localusers, it failed silently? let's check updatepatientprescription).
             }
 
             if (updatedUser) {
-                // Only update if data changed to avoid loops, but simple set is fine
+                // only update if data changed to avoid loops, but simple set is fine
                 setUser(prev => ({ ...prev, ...updatedUser }));
                 sessionStorage.setItem('physio_user', JSON.stringify(updatedUser));
             }
@@ -50,16 +50,16 @@ export const AuthProvider = ({ children }) => {
 
     const login = (username, password) => {
         try {
-            // 1. Check LocalStorage Users (Real Reg)
+            // 1. check localstorage users (real reg)
             const localUsers = JSON.parse(localStorage.getItem('physio_users_db') || '[]');
             let foundUser = localUsers.find(u => u.username === username && u.password === password);
 
-            // 2. Check Demo Users
+            // 2. check demo users
             if (!foundUser) {
                 foundUser = DEMO_USERS.find(u => u.username === username && (u.password === password || password === 'demo'));
 
-                // CRITICAL FIX: If we log in as a Demo User, we must ensure they exist in 'physio_users_db' so their report can be updated by the PT.
-                // If they are not in local DB, copy them there.
+                // critical fix: if we log in as a demo user, we must ensure they exist in 'physio_users_db' so their report can be updated by the pt.
+                // if they are not in local db, copy them there.
                 if (foundUser && !localUsers.find(u => u.username === username)) {
                     localUsers.push(foundUser);
                     localStorage.setItem('physio_users_db', JSON.stringify(localUsers));
@@ -68,9 +68,9 @@ export const AuthProvider = ({ children }) => {
 
             if (foundUser) {
                 setUser(foundUser);
-                // Default role if missing (for old local users)
+                // default role if missing (for old local users)
                 if (!foundUser.role) foundUser.role = 'patient';
-                sessionStorage.setItem('physio_user', JSON.stringify(foundUser)); // SESSION STORAGE
+                sessionStorage.setItem('physio_user', JSON.stringify(foundUser)); // session storage
                 return { success: true, role: foundUser.role };
             }
         } catch (e) {
@@ -93,8 +93,8 @@ export const AuthProvider = ({ children }) => {
                 name: userData.name,
                 username: userData.username,
                 password: userData.password,
-                role: 'patient', // Default new registers are patients
-                avatar: `https://ui-avatars.com/api/?name=${userData.name}&background=random`,
+                role: 'patient', // default new registers are patients
+                avatar: `https://ui-avatars.com/api/?name=${userdata.name}&background=random`,
                 hasConsulted: false,
                 report: null
             };
@@ -108,22 +108,22 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // PT Helper: Get All Patients (For Demo/Admin PT)
+    // pt helper: get all patients (for demo/admin pt)
     const getAllPatients = () => {
         if (!user || user.role !== 'physio') return [];
 
         try {
-            // Return ALL patients from Demo and Local Storage
+            // return all patients from demo and local storage
             const demoPatients = DEMO_USERS.filter(u => u.role === 'patient');
             const localUsers = JSON.parse(localStorage.getItem('physio_users_db') || '[]');
 
-            // Deduplicate by Username (Local takes priority)
+            // deduplicate by username (local takes priority)
             const patientMap = new Map();
 
-            // 1. Add Demo Patients
+            // 1. add demo patients
             demoPatients.forEach(p => patientMap.set(p.username, p));
 
-            // 2. Add/Overwrite with Local Patients
+            // 2. add/overwrite with local patients
             localUsers.forEach(u => {
                 if (u.role === 'patient') {
                     patientMap.set(u.username, u);
@@ -137,42 +137,42 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // PT Helper: Update Patient Prescription
+    // pt helper: update patient prescription
     const updatePatientPrescription = (patientId, newExercise, newNotes) => {
-        // We need to update the patient in whichever DB they exist (Demo or Local)
-        // Since we can't edit the const file, we'll simulate it by updating a "Overrides" object in localStorage
-        // OR simpler: Just rely on React State in the demo if it was checking a real DB. 
-        // Ideally, we'd update 'physio_users_db'.
+        // we need to update the patient in whichever db they exist (demo or local)
+        // since we can't edit the const file, we'll simulate it by updating a "overrides" object in localstorage
+        // or simpler: just rely on react state in the demo if it was checking a real db.
+        // ideally, we'd update 'physio_users_db'.
         try {
             const localUsers = JSON.parse(localStorage.getItem('physio_users_db') || '[]');
 
-            // Try to find by ID
+            // try to find by id
             let localIdx = localUsers.findIndex(u => u.id === patientId);
 
-            // If not found (maybe it's a raw demo user), try to find by username/id from demo and add it
+            // if not found (maybe it's a raw demo user), try to find by username/id from demo and add it
             if (localIdx === -1) {
                 const demoUser = DEMO_USERS.find(u => u.id === patientId);
                 if (demoUser) {
-                    // Critical: Deep clone to avoid mutating constant reference
+                    // critical: deep clone to avoid mutating constant reference
                     localUsers.push(JSON.parse(JSON.stringify(demoUser)));
                     localIdx = localUsers.length - 1;
                 }
             }
 
             if (localIdx !== -1) {
-                // Update Local User
+                // update local user
                 if (!localUsers[localIdx].report) localUsers[localIdx].report = {};
                 localUsers[localIdx].report.prescribedExercise = newExercise;
                 localUsers[localIdx].report.notes = newNotes;
 
-                // Get Rich PT Details
+                // get rich pt details
                 const richPT = PHYSIOTHERAPISTS.find(p => p.name === user.name);
                 const contact = richPT?.contact?.phone || richPT?.contact?.email || user.email || "Contact Clinic";
 
                 localUsers[localIdx].report.ptName = user.name || "Unknown PT";
                 localUsers[localIdx].report.ptContact = contact;
 
-                // Ensure Date and Diagnosis exist
+                // ensure date and diagnosis exist
                 if (!localUsers[localIdx].report.date) {
                     localUsers[localIdx].report.date = new Date().toISOString().split('T')[0];
                 }
@@ -180,12 +180,12 @@ export const AuthProvider = ({ children }) => {
                     localUsers[localIdx].report.diagnosis = "Assessment Pending";
                 }
 
-                localUsers[localIdx].hasConsulted = true; // Mark as consulted
+                localUsers[localIdx].hasConsulted = true; // mark as consulted
 
                 localStorage.setItem('physio_users_db', JSON.stringify(localUsers));
-                console.log("Prescription Saved:", localUsers[localIdx]); // DEBUG
+                console.log("Prescription Saved:", localUsers[localIdx]); // debug
                 localStorage.setItem('physio_users_db', JSON.stringify(localUsers));
-                console.log("Prescription Saved:", localUsers[localIdx]); // DEBUG
+                console.log("Prescription Saved:", localUsers[localIdx]); // debug
                 return true;
             }
         } catch (e) {
@@ -194,7 +194,7 @@ export const AuthProvider = ({ children }) => {
         return false;
     };
 
-    // User Helper: Send Session to PT
+    // user helper: send session to pt
     const sendSessionToPT = (sessionData) => {
         if (!user) return false;
         try {

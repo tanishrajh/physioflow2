@@ -4,7 +4,7 @@ import { squatRules } from '../exercises/squat';
 import { bicepCurlRules } from '../exercises/bicepCurl';
 import { shoulderPressRules } from '../exercises/shoulderPress';
 
-// Map of available exercises
+// map of available exercises
 const EXERCISES = {
     squat: squatRules,
     bicepCurl: bicepCurlRules,
@@ -13,7 +13,7 @@ const EXERCISES = {
 
 let currentExercise = squatRules;
 
-// State for filters
+// state for filters
 const filters = {};
 const visibilityHistory = {};
 const VISIBILITY_THRESHOLD_MS = 150;
@@ -57,23 +57,14 @@ function analyzeExercise(pose, visibleJoints) {
     const feedbackEvents = [];
     if (!currentExercise) return feedbackEvents;
 
-    // Check if required joints for this exercise are visible
-    // For 'half_body', we might need to be lenient if feet are missing but we only care about arms.
-    // The Rules object has 'requiredJoints'.
-
-    // Strict Global Check? Or Per-Rule Check?
-    // Let's do Per-Rule Check generally, but for overall status, maybe we check 'requiredJoints'.
-    // If critical joints missing, maybe don't analyze?
-
-    // Let's proceed to check each rule
+    // ensure all required joints are visible for each rule
     currentExercise.rules.forEach(rule => {
         const dependentJoints = rule.relatedJoints || [];
         const allVisible = dependentJoints.every(j => visibleJoints.has(j));
 
         if (allVisible) {
             if (rule.type === 'angle' || rule.type === 'stability') {
-                // Expect 3 joints: hip, knee, ankle OR shoulder, elbow, hip
-                // Convention: relatedJoints = [A, B, C]. Angle at B.
+                // convention: relatedjoints = [a, b, c]. angle is at b.
                 const [aName, bName, cName] = rule.relatedJoints;
                 const a = pose.keypoints.find(k => k.name === aName);
                 const b = pose.keypoints.find(k => k.name === bName);
@@ -101,14 +92,13 @@ function analyzeExercise(pose, visibleJoints) {
                     }
                 }
             } else if (rule.type === 'symmetry_y') {
-                // e.g. Left Wrist vs Right Wrist Y
+                // e.g. left wrist vs right wrist y
                 const [n1, n2] = rule.relatedJoints;
                 const j1 = pose.keypoints.find(k => k.name === n1);
                 const j2 = pose.keypoints.find(k => k.name === n2);
 
                 if (j1 && j2) {
-                    // Normalize by height? Or just raw px?
-                    // Px varies by distance. Normalizing by Shoulder Distance is reliable.
+                    // normalize using shoulder distance to account for camera depth
                     const lShoulder = pose.keypoints.find(k => k.name === 'left_shoulder');
                     const rShoulder = pose.keypoints.find(k => k.name === 'right_shoulder');
                     let scale = 100; // default
@@ -117,14 +107,13 @@ function analyzeExercise(pose, visibleJoints) {
                     }
 
                     const diffY = Math.abs(j1.y - j2.y);
-                    const normalizedDiff = diffY / scale; // Fraction of shoulder width
+                    const normalizedDiff = diffY / scale; // fraction of shoulder width
 
                     let severity = null;
                     if (normalizedDiff > rule.thresholds.high) severity = 'high';
                     else if (normalizedDiff > rule.thresholds.medium) severity = 'medium';
 
                     if (severity) {
-                        // Attach to the lower hand?
                         const target = j1.y > j2.y ? j1 : j2; // larger y is lower
                         feedbackEvents.push({
                             joint: target.name,
@@ -141,13 +130,13 @@ function analyzeExercise(pose, visibleJoints) {
         }
     });
 
-    // --- Rep Counting Logic ---
+    // --- rep counting logic ---
     let repUpdate = { repCount: currentRepCount, guidance: currentGuidance, phase: currentPhase };
 
     if (currentExercise.repLogic) {
         const { joint, relatedJoints, phases } = currentExercise.repLogic;
 
-        // Find joints
+        // find joints
         const [aN, bN, cN] = relatedJoints;
         const a = pose.keypoints.find(k => k.name === aN);
         const b = pose.keypoints.find(k => k.name === bN);
@@ -157,16 +146,7 @@ function analyzeExercise(pose, visibleJoints) {
             const angle = calculateAngle(a, b, c);
             const activePhase = phases[currentPhase];
 
-            // Check transition
-            let transition = false;
-            // e.g. extension threshold 150. if angle > 150, we are definitely in extension.
-            // But we want to switch TO the next phase.
-            // Wait, logic should be:
-            // If I am in 'extension' (Start), I need to reach target of 'flexion'.
-            // Actually, simpler:
-
-            // Current Phase: 'extension' (Waiting to curl). Guide: "Curl Up".
-            // Target: Must reach 'flexion' zone (angle < 60).
+            // check if we hit the target angle to switch phases
 
             const nextPhaseName = activePhase.next;
             const targetPhase = phases[nextPhaseName];
@@ -176,16 +156,16 @@ function analyzeExercise(pose, visibleJoints) {
                 : angle < targetPhase.threshold;
 
             if (hitTarget) {
-                // Transition!
+                // transition!
                 console.log(`Phase Switch: ${currentPhase} -> ${nextPhaseName} (Angle: ${Math.round(angle)})`);
                 currentPhase = nextPhaseName;
                 currentGuidance = targetPhase.guide;
 
-                // If we returned to start (extension), rep++
+                // if we returned to start (extension), rep++
                 if (nextPhaseName === 'extension') {
                     currentRepCount++;
 
-                    // Calculate Tempo
+                    // calculate tempo
                     const now = Date.now();
                     const duration = (now - lastRepTime) / 1000;
                     lastRepTime = now;
@@ -232,7 +212,7 @@ self.onmessage = (e) => {
     else if (type === 'pose') {
         const { poseFrame, timestamp } = payload;
 
-        // ... (filtering & visibility same) ...
+        // smooth keypoints using oneeuro filter
         const smoothedKeypoints = poseFrame.keypoints.map(kp => {
             const filter = getFilter(kp.name);
             const { x, y } = filter.filter(kp.x, kp.y, timestamp);
@@ -241,7 +221,7 @@ self.onmessage = (e) => {
         const smoothedPose = { ...poseFrame, keypoints: smoothedKeypoints };
         const visibleJoints = checkVisibility(smoothedKeypoints, timestamp);
 
-        // 3. Analysis
+        // analyze the smoothed pose
         const analysis = analyzeExercise(smoothedPose, visibleJoints);
 
         self.postMessage({

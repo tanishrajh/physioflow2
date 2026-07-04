@@ -8,7 +8,7 @@ const DashboardPage = () => {
     const { user, logout, refreshUser } = useAuth();
     const navigate = useNavigate();
 
-    // Auto-refresh user data to sync with PT updates
+    // auto-refresh user data to sync with pt updates
     React.useEffect(() => {
         if (!refreshUser) return;
         const interval = setInterval(() => {
@@ -32,7 +32,7 @@ const DashboardPage = () => {
     React.useEffect(() => {
         try {
             const stored = JSON.parse(localStorage.getItem('physio_history') || '[]');
-            // Filter by User ID (Strict: Only show my data)
+            // filter by user id (strict: only show my data)
             const userHistory = stored.filter(item => item.userId === user.id);
             setHistory(userHistory);
         } catch (e) {
